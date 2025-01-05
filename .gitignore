@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -153,4 +152,3 @@ dist
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
->>>>>>> 6725bde (Initialize project using Create React App)
