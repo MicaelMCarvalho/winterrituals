@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Menu, X, Search, Heart, User, ShoppingCart } from 'lucide-react';
 import { Language } from '../../types';
 
@@ -7,31 +8,20 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+
   const mainNavLinks = [
-    { name: 'Interactive Map', href: '#' },
-    { name: 'Cultural Stories', href: '#' },
-    { name: 'Local Traditions', href: '#' },
-    { name: 'About', href: '#' },
+    { name: t('header.nav.interactiveMap'), href: '/map' },
+    { name: t('header.nav.list'), href: '#' },
+    { name: t('header.nav.localTraditions'), href: '#' },
+    { name: t('header.nav.about'), href: '#' },
   ];
-  
-  const languages: Language[] = ['en'];
+
+  const languages: Language[] = ['en', 'es', 'pt'];
 
   return (
     <>
-      {/* Top bar */}
-      <div className="w-full bg-gray-100 py-2">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <div className="flex gap-4">
-            <a href="#" className="text-sm text-gray-600 hover:text-gray-900">TikTok</a>
-            <a href="#" className="text-sm text-gray-600 hover:text-gray-900">YouTube</a>
-            <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Instagram</a>
-          </div>
-          <p className="text-sm text-gray-600">20+ Years of Cultural Heritage</p>
-        </div>
-      </div>
-
       {/* Main header */}
       <header className="w-full bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,38 +29,54 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
           <div className="flex items-center justify-between py-4">
             <div className="flex-shrink-0">
               <h1 className="text-2xl font-bold">
-                Iberian Winter Rituals
+                {t('header.title')}
               </h1>
             </div>
 
             {/* Search bar */}
+            {/* 
             <div className="hidden md:flex items-center flex-1 max-w-lg mx-8">
               <div className="relative w-full">
                 <input
                   type="text"
-                  placeholder="Search traditions..."
+                  placeholder={t('header.search.placeholder')}
                   className="w-full px-4 py-2 pl-10 pr-4 rounded-full border border-gray-200 focus:outline-none focus:border-gray-400"
                 />
                 <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
               </div>
             </div>
+            */}
 
             {/* Right side icons */}
-            <div className="flex items-center gap-4">
-              <button className="p-2 text-gray-600 hover:text-gray-900">
+            {/*<div className="flex items-center gap-4">
+              <button 
+                className="p-2 text-gray-600 hover:text-gray-900"
+                aria-label={t('header.search.label')}
+              >
                 <Search className="h-6 w-6 md:hidden" />
               </button>
-              <button className="p-2 text-gray-600 hover:text-gray-900">
+              <button 
+                className="p-2 text-gray-600 hover:text-gray-900"
+                aria-label={t('header.favorites.label')}
+              >
                 <Heart className="h-6 w-6" />
               </button>
-              <button className="p-2 text-gray-600 hover:text-gray-900">
+              <button 
+                className="p-2 text-gray-600 hover:text-gray-900"
+                aria-label={t('header.account.label')}
+              >
                 <User className="h-6 w-6" />
               </button>
-              <button className="p-2 text-gray-600 hover:text-gray-900 relative">
+              <button 
+                className="p-2 text-gray-600 hover:text-gray-900 relative"
+                aria-label={t('header.cart.label')}
+              >
                 <ShoppingCart className="h-6 w-6" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">0</span>
+                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
+                  0
+                </span>
               </button>
-            </div>
+            </div>*/}
           </div>
 
           {/* Navigation */}
@@ -89,6 +95,7 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
                 key={lang}
                 onClick={() => onLanguageChange(lang)}
                 className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 font-medium ml-4"
+                aria-label={t('header.language.select', { language: lang.toUpperCase() })}
               >
                 {lang.toUpperCase()}
               </button>
@@ -100,13 +107,15 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-900"
+              aria-expanded={isMenuOpen}
+              aria-label={t('header.menu.toggle')}
             >
               {isMenuOpen ? (
                 <X className="h-6 w-6" />
               ) : (
                 <Menu className="h-6 w-6" />
               )}
-              <span className="ml-2">Menu</span>
+              <span className="ml-2">{t('header.menu.label')}</span>
             </button>
           </div>
         </div>
@@ -130,6 +139,7 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
                     key={lang}
                     onClick={() => onLanguageChange(lang)}
                     className="mr-4 text-sm text-gray-600 hover:text-gray-900 font-medium"
+                    aria-label={t('header.language.select', { language: lang.toUpperCase() })}
                   >
                     {lang.toUpperCase()}
                   </button>

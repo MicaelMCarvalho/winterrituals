@@ -1,8 +1,8 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { en } from './locales/en';
-// import { es } from './locales/es';
-// import { pt } from './locales/pt';
+import { es } from './locales/es';
+import { pt } from './locales/pt';
 
 export type TranslationKeys = typeof en;
 
@@ -11,8 +11,8 @@ i18n
   .init({
     resources: {
       en: { translation: en },
-      // es: { translation: es },
-      // pt: { translation: pt }
+      es: { translation: es },
+      pt: { translation: pt }
     },
     lng: 'en',
     fallbackLng: 'en',

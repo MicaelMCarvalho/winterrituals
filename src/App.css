@@ -13,3 +13,15 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+.custom-dot {
+  background-color: #dc2626; /* red-600 */
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}

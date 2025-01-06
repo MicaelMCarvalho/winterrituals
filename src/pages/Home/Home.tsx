@@ -1,28 +1,31 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Home: React.FC = () => {
+  const { t } = useTranslation();
+  
   const categories = [
     {
-      title: "Interactive Map",
-      description: "Explore festivals across the Iberian Peninsula",
+      title: t('home.features.interactiveMap.title'),
+      description: t('home.features.interactiveMap.description'),
       image: "/api/placeholder/600/400",
       link: "#"
     },
     {
-      title: "Cultural Stories",
-      description: "Discover the rich history behind each tradition",
+      title: t('home.features.culturalStories.title'),
+      description: t('home.features.culturalStories.description'),
       image: "/api/placeholder/600/400",
       link: "#"
     },
     {
-      title: "Local Traditions",
-      description: "Learn about authentic regional celebrations",
+      title: t('home.features.localTraditions.title'),
+      description: t('home.features.localTraditions.description'),
       image: "/api/placeholder/600/400",
       link: "#"
     },
     {
-      title: "Community",
-      description: "Connect with fellow tradition enthusiasts",
+      title: t('home.features.community.title', 'Community'),
+      description: t('home.features.community.description', 'Connect with fellow tradition enthusiasts'),
       image: "/api/placeholder/600/400",
       link: "#"
     }
@@ -35,7 +38,7 @@ const Home: React.FC = () => {
         <div className="absolute inset-0">
           <img
             src="/api/placeholder/1920/500"
-            alt="Winter festivities"
+            alt={t('home.hero.title')}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gray-900/40"></div>
@@ -43,13 +46,13 @@ const Home: React.FC = () => {
         <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
           <div className="max-w-xl text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Discover Iberian Winter Traditions
+              {t('home.hero.title')}
             </h1>
             <p className="text-xl mb-8">
-              Explore the rich cultural heritage of winter festivities across Portugal and Spain
+              {t('home.hero.subtitle')}
             </p>
             <button className="bg-white text-gray-900 px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors">
-              Start Exploring
+              {t('home.hero.cta', 'Start Exploring')}
             </button>
           </div>
         </div>
@@ -58,7 +61,9 @@ const Home: React.FC = () => {
       {/* Categories Section */}
       <section>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Explore by Category</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">
+            {t('home.categories.title', 'Explore by Category')}
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {categories.map((category, index) => (
               <a 
@@ -90,19 +95,20 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div className="space-y-4">
-              <h2 className="text-3xl font-bold text-gray-900">Featured Story</h2>
+              <h2 className="text-3xl font-bold text-gray-900">
+                {t('home.featured.title', 'Featured Story')}
+              </h2>
               <p className="text-gray-600">
-                Discover how ancient winter rituals have evolved into modern-day celebrations,
-                keeping cultural heritage alive through generations.
+                {t('home.featured.description', 'Discover how ancient winter rituals have evolved into modern-day celebrations, keeping cultural heritage alive through generations.')}
               </p>
               <button className="text-gray-900 font-medium hover:underline">
-                Read more →
+                {t('home.featured.cta', 'Read more')} →
               </button>
             </div>
             <div className="aspect-video rounded-lg overflow-hidden">
               <img
                 src="/api/placeholder/800/450"
-                alt="Featured story"
+                alt={t('home.featured.imageAlt', 'Featured story')}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -113,19 +119,20 @@ const Home: React.FC = () => {
       {/* Newsletter Section */}
       <section className="bg-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
+          <h2 className="text-3xl font-bold mb-4">
+            {t('home.newsletter.title', 'Stay Updated')}
+          </h2>
           <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-            Join our newsletter to receive updates about upcoming festivals and cultural events
-            across the Iberian Peninsula.
+            {t('home.newsletter.description', 'Join our newsletter to receive updates about upcoming festivals and cultural events across the Iberian Peninsula.')}
           </p>
           <form className="max-w-md mx-auto flex gap-4">
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder={t('home.newsletter.emailPlaceholder', 'Enter your email')}
               className="flex-1 px-4 py-3 rounded-full text-gray-900"
             />
             <button className="bg-white text-gray-900 px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors">
-              Subscribe
+              {t('home.newsletter.submit', 'Subscribe')}
             </button>
           </form>
         </div>
