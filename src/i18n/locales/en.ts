@@ -1,12 +1,39 @@
 export const en = {
+  about: {
+    title: "About Iberian Winter Rituals",
+    mission: {
+      title: "Our Mission",
+      description: "Exploring the rich cultural heritage of winter festivities across the Iberian Peninsula. We document and preserve ancient traditions that continue to captivate and inspire, connecting past and present through masked celebrations and ritual performances."
+    },
+    masquerades: {
+      title: "The Winter Masquerades",
+      description: "These ancient celebrations, known as \"mascaradas\" in Portugal and Spain, take place during the winter months, particularly around Christmas, New Year, and Carnival. Each festival features unique masks, costumes, and characters that have been passed down through generations.",
+      elements: {
+        title: "Traditional Elements",
+        list: {
+          masks: "Hand-carved wooden masks",
+          costumes: "Colorful costumes with bells",
+          dances: "Ritual dances and performances",
+          community: "Community participation"
+        }
+      },
+      regions: {
+        title: "Festival Regions",
+        list: {
+          trasosmontes: "Trás-os-Montes, Portugal",
+          zamora: "Zamora, Spain",
+          cantabria: "Cantabria, Spain",
+          others: "Other regions of the Iberian Peninsula"
+        }
+      }
+    }
+  },
   header: {
     title: "Iberian Winter Rituals",
     heritage: "20+ Years of Cultural Heritage",
     nav: {
       interactiveMap: "Interactive Map",
-      listView: "Events List",
-      culturalStories: "Cultural Stories",
-      localTraditions: "Local Traditions",
+      nextEvents: "Next Events",
       about: "About",
     },
     search: {
@@ -44,13 +71,9 @@ export const en = {
         title: "Interactive Map",
         description: "Explore festivals across the Iberian Peninsula",
       },
-      culturalStories: {
-        title: "Cultural Stories",
-        description: "Discover the rich history behind each tradition",
-      },
-      localTraditions: {
-        title: "Local Traditions",
-        description: "Learn about authentic regional celebrations",
+      nextEvents: {
+        title: "Next Events",
+        description: "Discover upcoming festivals and celebrations",
       },
     },
   },

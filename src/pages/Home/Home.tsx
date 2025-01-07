@@ -12,23 +12,11 @@ const Home: React.FC = () => {
       link: "#"
     },
     {
-      title: t('home.features.culturalStories.title'),
+      title: t('home.features.nextEvents.title'),
       description: t('home.features.culturalStories.description'),
       image: "/api/placeholder/600/400",
       link: "#"
     },
-    {
-      title: t('home.features.localTraditions.title'),
-      description: t('home.features.localTraditions.description'),
-      image: "/api/placeholder/600/400",
-      link: "#"
-    },
-    {
-      title: t('home.features.community.title', 'Community'),
-      description: t('home.features.community.description', 'Connect with fellow tradition enthusiasts'),
-      image: "/api/placeholder/600/400",
-      link: "#"
-    }
   ];
 
   return (

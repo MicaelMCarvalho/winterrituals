@@ -1,72 +1,96 @@
 export const pt = {
+  about: {
+    title: "Rituais de Inverno Ibéricos",
+    mission: {
+      title: "Nossa Missão",
+      description: "Explorando o rico patrimônio cultural das festividades de inverno na Península Ibérica. Documentamos e preservamos antigas tradições que continuam a cativar e inspirar, conectando passado e presente através de celebrações mascaradas e performances rituais."
+    },
+    masquerades: {
+      title: "As Mascaradas de Inverno",
+      description: "Estas celebrações antigas, conhecidas como \"mascaradas\" em Portugal e Espanha, ocorrem durante os meses de inverno, particularmente ao redor do Natal, Ano Novo e Carnaval. Cada festival apresenta máscaras, trajes e personagens únicos que foram transmitidos através de gerações.",
+      elements: {
+        title: "Elementos Tradicionais",
+        list: {
+          masks: "Máscaras de madeira esculpidas à mão",
+          costumes: "Trajes coloridos com sinos",
+          dances: "Danças rituais e performances",
+          community: "Participação comunitária"
+        }
+      },
+      regions: {
+        title: "Regiões dos Festivais",
+        list: {
+          trasosmontes: "Trás-os-Montes, Portugal",
+          zamora: "Zamora, Espanha",
+          cantabria: "Cantábria, Espanha",
+          others: "Outras regiões da Península Ibérica"
+        }
+      }
+    }
+  },
   header: {
-    title: "Iberian Winter Rituals",
-    heritage: "20+ Years of Cultural Heritage",
+    title: "Rituais de Inverno Ibéricos",
+    heritage: "20+ Anos de Patrimônio Cultural",
     nav: {
-      interactiveMap: "Interactive Map",
-      culturalStories: "Cultural Stories",
-      localTraditions: "Local Traditions",
-      about: "About",
+      interactiveMap: "Mapa Interativo",
+      nextEvents: "Próximos Eventos",
+      about: "Sobre",
     },
     search: {
-      placeholder: "Search traditions...",
-      label: "Search",
+      placeholder: "Buscar tradições...",
+      label: "Buscar",
     },
     social: {
-      follow: "Follow us on {{platform}}",
+      follow: "Siga-nos em {{platform}}",
     },
     favorites: {
-      label: "Favorites",
+      label: "Favoritos",
     },
     account: {
-      label: "Account",
+      label: "Conta",
     },
     cart: {
-      label: "Shopping Cart",
+      label: "Carrinho de Compras",
     },
     menu: {
-      toggle: "Toggle menu",
+      toggle: "Alternar menu",
       label: "Menu",
     },
     language: {
-      select: "Switch to {{language}}",
+      select: "Mudar para {{language}}",
     },
   },
   home: {
     hero: {
-      title: "Discover Winter Rituals",
+      title: "Descubra Rituais de Inverno",
       subtitle:
-        "Explore the ancient traditions and fascinating cultural heritage of winter festivities across Portugal and Spain.",
+        "Explore as antigas tradições e fascinante patrimônio cultural das festividades de inverno em Portugal e Espanha.",
     },
     features: {
       interactiveMap: {
-        title: "Interactive Map",
-        description: "Explore festivals across the Iberian Peninsula",
+        title: "Mapa Interativo",
+        description: "Explore festivais pela Península Ibérica",
       },
-      culturalStories: {
-        title: "Cultural Stories",
-        description: "Discover the rich history behind each tradition",
-      },
-      localTraditions: {
-        title: "Local Traditions",
-        description: "Learn about authentic regional celebrations",
+      nextEvents: {
+        title: "Próximos Eventos",
+        description: "Descubra festivais e celebrações próximos",
       },
     },
   },
   footer: {
     about: {
-      title: "About",
+      title: "Sobre",
       description:
-        "Exploring the rich cultural heritage of winter festivities across the Iberian Peninsula.",
+        "Explorando o rico patrimônio cultural das festividades de inverno na Península Ibérica.",
     },
     contact: {
-      title: "Contact",
-      email: "info@iberianrituals.com",
+      title: "Contato",
+      email: "info@rituaisibericos.com",
     },
     followUs: {
-      title: "Follow Us",
+      title: "Siga-nos",
     },
-    copyright: "© {{year}} Iberian Winter Rituals. All rights reserved.",
+    copyright: "© {{year}} Rituais de Inverno Ibéricos. Todos os direitos reservados.",
   },
 };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Menu, X, Search, Heart, User, ShoppingCart } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import LanguageSwitcher from './lang';
 import { Language } from '../../types';
 
 interface HeaderProps {
@@ -13,12 +14,9 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
 
   const mainNavLinks = [
     { name: t('header.nav.interactiveMap'), href: '/map' },
-    { name: t('header.nav.list'), href: '#' },
-    { name: t('header.nav.localTraditions'), href: '#' },
-    { name: t('header.nav.about'), href: '#' },
+    { name: t('header.nav.nextEvents'), href: '/eventsList' },
+    { name: t('header.nav.about'), href: '/about' },
   ];
-
-  const languages: Language[] = ['en', 'es', 'pt'];
 
   return (
     <>
@@ -32,51 +30,6 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
                 {t('header.title')}
               </h1>
             </div>
-
-            {/* Search bar */}
-            {/* 
-            <div className="hidden md:flex items-center flex-1 max-w-lg mx-8">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder={t('header.search.placeholder')}
-                  className="w-full px-4 py-2 pl-10 pr-4 rounded-full border border-gray-200 focus:outline-none focus:border-gray-400"
-                />
-                <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-              </div>
-            </div>
-            */}
-
-            {/* Right side icons */}
-            {/*<div className="flex items-center gap-4">
-              <button 
-                className="p-2 text-gray-600 hover:text-gray-900"
-                aria-label={t('header.search.label')}
-              >
-                <Search className="h-6 w-6 md:hidden" />
-              </button>
-              <button 
-                className="p-2 text-gray-600 hover:text-gray-900"
-                aria-label={t('header.favorites.label')}
-              >
-                <Heart className="h-6 w-6" />
-              </button>
-              <button 
-                className="p-2 text-gray-600 hover:text-gray-900"
-                aria-label={t('header.account.label')}
-              >
-                <User className="h-6 w-6" />
-              </button>
-              <button 
-                className="p-2 text-gray-600 hover:text-gray-900 relative"
-                aria-label={t('header.cart.label')}
-              >
-                <ShoppingCart className="h-6 w-6" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
-                  0
-                </span>
-              </button>
-            </div>*/}
           </div>
 
           {/* Navigation */}
@@ -90,16 +43,21 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
                 {link.name}
               </a>
             ))}
-            {languages.map(lang => (
-              <button
-                key={lang}
-                onClick={() => onLanguageChange(lang)}
-                className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 font-medium ml-4"
-                aria-label={t('header.language.select', { language: lang.toUpperCase() })}
-              >
-                {lang.toUpperCase()}
-              </button>
-            ))}
+            
+            {/* Language Switcher */}
+            <div className="ml-4 flex items-center">
+              {/* Existing language buttons */}
+              {['en', 'es', 'pt'].map(lang => (
+                <button
+                  key={lang}
+                  onClick={() => onLanguageChange(lang as Language)}
+                  className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 font-medium ml-2"
+                  aria-label={t('header.language.select', { language: lang.toUpperCase() })}
+                >
+                  {lang.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </nav>
 
           {/* Mobile menu button */}
@@ -133,11 +91,12 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
                   {link.name}
                 </a>
               ))}
-              <div className="px-3 py-2">
-                {languages.map(lang => (
+              <div className="px-3 py-2 flex items-center">
+                {/* Language selection buttons for mobile */}
+                {['en', 'es', 'pt'].map(lang => (
                   <button
                     key={lang}
-                    onClick={() => onLanguageChange(lang)}
+                    onClick={() => onLanguageChange(lang as Language)}
                     className="mr-4 text-sm text-gray-600 hover:text-gray-900 font-medium"
                     aria-label={t('header.language.select', { language: lang.toUpperCase() })}
                   >
