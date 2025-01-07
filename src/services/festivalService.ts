@@ -1,33 +1,28 @@
-import { pool } from '../config/db';
-import { Festival } from '../types/festival';
+import { Festival } from '@/types/festival';
 
 export async function getFestivals(): Promise<Festival[]> {
-    try {
-        const result = await pool.query(`
-            SELECT 
-                id, 
-                name, 
-                location, 
-                date, 
-                description, 
-                latitude, 
-                longitude 
-            FROM festivals
-        `);
+  try {
+    const response = await fetch('/api/festivals', {
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    });
 
-        return result.rows.map(row => ({
-            id: row.id.toString(),
-            name: row.name,
-            location: row.location,
-            date: row.date,
-            description: row.description,
-            coordinates: {
-                lat: parseFloat(row.latitude),
-                lng: parseFloat(row.longitude)
-            }
-        }));
-    } catch (error) {
-        console.error('Error fetching festivals:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+
+    const data = await response.json();
+    
+    if (!Array.isArray(data)) {
+      console.error('Unexpected response format:', data);
+      throw new Error('Invalid response format');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch festivals:', error);
+    throw error;
+  }
 }

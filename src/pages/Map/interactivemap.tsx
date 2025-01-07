@@ -1,116 +1,85 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { divIcon } from 'leaflet';
+import { divIcon, DivIcon } from 'leaflet';
 import MapPopup from '@/components/Map/MapPopup';
-
+import { getFestivals } from '@/services/festivalService';
+import { Festival } from '@/types/festival';
 import 'leaflet/dist/leaflet.css';
 
-interface Festival {
-  id: string;
-  name: string;
-  location: string;
-  date: string;
-  description: string;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-}
+const InteractiveMap: React.FC = () => {
+  const [festivals, setFestivals] = useState<Festival[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
-function InteractiveMap() {
-  const { t } = useTranslation();
-  const [selectedFestival, setSelectedFestival] = useState<Festival | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  useEffect(() => {
+    const loadFestivals = async (): Promise<void> => {
+      try {
+        const data = await getFestivals();
+        setFestivals(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadFestivals();
+  }, []);
 
-  // Sample festivals data across Iberian Peninsula
-  const festivals: Festival[] = [
-    {
-      id: '1',
-      name: 'Mascaradas de Bragança',
-      location: 'Bragança, Portugal',
-      date: 'December 25 - January 6',
-      description: 'Ancient winter masquerade traditions with elaborate masks and costumes.',
-      coordinates: { lat: 41.8061, lng: -6.7567 }
-    },
-    {
-      id: '2',
-      name: 'Festa dos Rapazes',
-      location: 'Vinhais, Portugal',
-      date: 'December 25-26',
-      description: 'Traditional winter festival with masked characters and ritual dances.',
-      coordinates: { lat: 41.8349, lng: -7.0026 }
-    },
-    {
-      id: '3',
-      name: 'Entrudo de Lazarim',
-      location: 'Lamego, Portugal',
-      date: 'Carnival period',
-      description: 'Famous carnival celebration with wooden masks and satirical performances.',
-      coordinates: { lat: 41.0970, lng: -7.8554 }
-    },
-    {
-      id: '4',
-      name: 'Zangarrón de Montamarta',
-      location: 'Zamora, Spain',
-      date: 'January 1 and 6',
-      description: 'Traditional winter masquerade with demon-like character.',
-      coordinates: { lat: 41.5827, lng: -5.9034 }
-    },
-    {
-      id: '5',
-      name: 'La Vijanera',
-      location: 'Silió, Cantabria, Spain',
-      date: 'First Sunday of January',
-      description: 'Ancient winter festival with over 60 different character masks.',
-      coordinates: { lat: 43.2167, lng: -4.0333 }
-    }
-  ];
-
-  const filteredFestivals = festivals.filter(festival =>
+  const filteredFestivals = festivals.filter((festival) =>
     festival.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     festival.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleFestivalClick = (festival: Festival) => {
-    setSelectedFestival(festival);
-  };
-
-  const dotIcon = divIcon({
+  const dotIcon: DivIcon = divIcon({
     className: 'custom-dot',
     html: '',
     iconSize: [10, 10],
   });
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
-    <div style={{ height: '600px' }}>
-      <MapContainer 
-        center={[40.4168, -3.7038]} // Center of Iberian Peninsula
-        zoom={6} 
-        scrollWheelZoom={true}
-        style={{ height: '100%', width: '100%' }}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {festivals.map(festival => (
-          <Marker 
-            key={festival.id} 
-            position={[festival.coordinates.lat, festival.coordinates.lng]}
-            icon={dotIcon}
-            eventHandlers={{
-              click: () => handleFestivalClick(festival),
-            }}
-          >
-            <Popup>
-              <MapPopup festival={festival} />
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+    <div className="flex flex-col gap-4">
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="Search festivals by name or location..."
+        className="p-2 border rounded-md w-full max-w-md"
+      />
+      <div className="h-[600px]">
+        <MapContainer 
+          center={[40.4168, -3.7038]}
+          zoom={6} 
+          scrollWheelZoom={true}
+          className="h-full w-full"
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {filteredFestivals.map((festival) => (
+            <Marker 
+              key={festival.id} 
+              position={[festival.coordinates.lat, festival.coordinates.lng]}
+              icon={dotIcon}
+            >
+              <Popup>
+                <MapPopup festival={festival} />
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      </div>
     </div>
   );
-}
+};
 
 export default InteractiveMap;

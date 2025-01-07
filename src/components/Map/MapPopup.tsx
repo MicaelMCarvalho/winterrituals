@@ -1,16 +1,5 @@
 import React from 'react';
-
-interface Festival {
-  id: string;
-  name: string;
-  location: string;
-  date: string;
-  description: string;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-}
+import { Festival } from '@/types/festival';
 
 interface MapPopupProps {
   festival: Festival;

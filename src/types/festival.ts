@@ -9,3 +9,13 @@ export interface Festival {
     lng: number;
   };
 }
+
+export interface FestivalResponse {
+  id: string;
+  name: string;
+  location: string;
+  date: string;
+  description: string;
+  latitude: number;
+  longitude: number;
+}
