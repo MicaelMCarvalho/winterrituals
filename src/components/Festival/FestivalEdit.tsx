@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, MapPin } from 'lucide-react';
+import MDEditor from '@uiw/react-md-editor';
 import { Festival } from '../../types/festival';
 import LocationSearch from '../../components/Location/LocationSearch';
 import ApiService from '../../services/api';
@@ -26,8 +27,16 @@ const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  // Handle markdown editor changes
+  const handleDescriptionChange = (value?: string) => {
+    setFormData(prev => ({
+      ...prev,
+      description: value || ''
+    }));
+  };
+
+  // Handle other input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     if (name.startsWith('coordinates.')) {
@@ -48,25 +57,24 @@ const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  setError(null);
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
 
-  try {
-    if (formData.id) {
-      await ApiService.updateFestival(formData.id, formData);
-    } else {
-      await ApiService.createFestival(formData);
+    try {
+      if (formData.id) {
+        await ApiService.updateFestival(formData.id, formData);
+      } else {
+        await ApiService.createFestival(formData);
+      }
+      onClose(true);
+    } catch (error) {
+      console.error('Submission error:', error);
+      setError(t('admin.submitFailed'));
+    } finally {
+      setIsSubmitting(false);
     }
-    onClose(true);
-  } catch (error) {
-    console.error('Submission error:', error);
-    setError(t('admin.submitFailed'));
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -128,28 +136,31 @@ const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
               <MapPin className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
             </div>
           </div>
+
+          {/* Dates */}
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="from_date" className="block text-sm font-medium text-gray-700">
               {t('admin.form.fromDate')}
             </label>
             <input
               type="date"
-              id="date"
-              name="date"
+              id="from_date"
+              name="from_date"
               value={formData.from_date.toString().split('T')[0]}
               onChange={handleChange}
               required
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
           </div>
+
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="to_date" className="block text-sm font-medium text-gray-700">
               {t('admin.form.toDate')}
             </label>
             <input
               type="date"
-              id="date"
-              name="date"
+              id="to_date"
+              name="to_date"
               value={formData.to_date.toString().split('T')[0]}
               onChange={handleChange}
               required
@@ -157,19 +168,16 @@ const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
             />
           </div>
 
-          {/* Description */}
+          {/* Description with Markdown Editor */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               {t('admin.form.description')}
             </label>
-            <textarea
-              id="description"
-              name="description"
-              rows={4}
+            <MDEditor
               value={formData.description}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              onChange={handleDescriptionChange}
+              height={200}
+              preview="edit"
             />
           </div>
 
@@ -179,7 +187,7 @@ const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
               {t('admin.form.url')}
             </label>
             <input
-              type="text"
+              type="url"
               id="url"
               name="url"
               value={formData.url}

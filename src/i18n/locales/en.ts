@@ -1,39 +1,44 @@
 export const en = {
   admin: {
-    title: "Festival Administration",
-    addFestival: "Add New Festival",
-    editFestival: "Edit Festival",
-    loading: "Loading festivals...",
-    confirmDelete: "Are you sure you want to delete this festival?",
-    deleteFailed: "Failed to delete festival",
-    submitFailed: "Failed to submit festival",
-    cancel: "Cancel",
-    create: "Create",
-    update: "Update",
-    submitting: "Submitting...",
-
-    // Table headers
-    table: {
-      name: "Name",
-      location: "Location",
-      date: "Date",
-      actions: "Actions",
+    festivals: {
+      title: "Festivals",
+      addButton: "Add Festival",
+      searchPlaceholder: "Search festivals...",
+      loading: "Loading festivals...",
+      noResults: "No festivals found matching your search.",
+      deleteConfirm: "Are you sure you want to delete this festival?",
+      deleteError: "Failed to delete festival. Please try again.",
+      loadError: "Error loading festivals. Please try again later.",
+      table: {
+        headers: {
+          name: "Name",
+          location: "Location",
+          date: "Date",
+          description: "Description",
+          actions: "Actions",
+        },
+        actions: {
+          editTooltip: "Edit festival",
+          deleteTooltip: "Delete festival",
+        },
+      },
     },
-
-    // Form labels
+    editFestival: "Edit Festival",
+    addFestival: "Add Festival",
+    close: "Close",
+    submitFailed: "Failed to submit festival. Please try again.",
+    cancel: "Cancel",
+    submitting: "Submitting...",
+    update: "Update",
+    create: "Create",
     form: {
       name: "Festival Name",
       location: "Location",
-      date: "Date",
+      fromDate: "From Date",
+      toDate: "To Date",
       description: "Description",
-      latitude: "Latitude",
-      longitude: "Longitude",
-    },
-
-    // Action labels
-    edit: "Edit",
-    delete: "Delete",
-    close: "Close",
+      url: "Website URL"
+    }
   },
   about: {
     title: "About Iberian Winter Rituals",

@@ -6,6 +6,8 @@ import { pt } from './locales/pt';
 
 export type TranslationKeys = typeof en;
 
+const storedLanguage = localStorage.getItem('language') || 'en';
+
 i18n
   .use(initReactI18next)
   .init({
@@ -14,7 +16,7 @@ i18n
       es: { translation: es },
       pt: { translation: pt }
     },
-    lng: 'en',
+    lng: storedLanguage,
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false

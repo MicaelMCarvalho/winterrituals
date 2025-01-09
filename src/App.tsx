@@ -8,10 +8,18 @@ import About from './pages/About/About';
 import AdminPage from './pages/Admin/admin';
 import LoginPage from './pages/User/login';
 import UpcomingFestivals from './pages/List/nextEvents';
+import { useTranslation } from 'react-i18next';
 
 import './App.css';
 
 const App: React.FC = () => {
+  const { i18n } = useTranslation();
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem('language', lng);
+  };
+
   return (
     <Router>
       <Layout>
