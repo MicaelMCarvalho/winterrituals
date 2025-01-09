@@ -1,3 +1,4 @@
+// Map.tsx
 import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { divIcon, DivIcon } from 'leaflet';
@@ -11,7 +12,6 @@ interface MapProps {
   onFestivalSelect: (festival: Festival) => void;
 }
 
-// This component handles map interactions
 const MapController: React.FC<{ selectedFestival: Festival | null }> = ({ selectedFestival }) => {
   const map = useMap();
 
@@ -30,6 +30,7 @@ const MapController: React.FC<{ selectedFestival: Festival | null }> = ({ select
 
 const Map: React.FC<MapProps> = ({ festivals, selectedFestival, onFestivalSelect }) => {
   const markerRefs = useRef<{ [key: string]: L.Marker }>({});
+  const previousSelectedId = useRef<string | null>(null);
 
   const dotIcon: DivIcon = divIcon({
     className: 'custom-dot',
@@ -44,16 +45,25 @@ const Map: React.FC<MapProps> = ({ festivals, selectedFestival, onFestivalSelect
   });
 
   useEffect(() => {
+    // Close previous popup if exists
+    if (previousSelectedId.current && markerRefs.current[previousSelectedId.current]) {
+      markerRefs.current[previousSelectedId.current].closePopup();
+    }
+
+    // Open new popup if a festival is selected
     if (selectedFestival && markerRefs.current[selectedFestival.id]) {
       markerRefs.current[selectedFestival.id].openPopup();
     }
+
+    // Update previous selected id
+    previousSelectedId.current = selectedFestival?.id || null;
   }, [selectedFestival]);
 
   return (
     <div className="h-full w-full relative">
-      <MapContainer 
+      <MapContainer
         center={[40.4168, -3.7038]}
-        zoom={6} 
+        zoom={6}
         scrollWheelZoom={true}
         className="h-full w-full absolute"
       >
@@ -63,8 +73,8 @@ const Map: React.FC<MapProps> = ({ festivals, selectedFestival, onFestivalSelect
         />
         <MapController selectedFestival={selectedFestival} />
         {festivals.map((festival) => (
-          <Marker 
-            key={festival.id} 
+          <Marker
+            key={festival.id}
             position={[festival.coordinates.lat, festival.coordinates.lng]}
             icon={festival.id === selectedFestival?.id ? selectedDotIcon : dotIcon}
             ref={(ref) => {
@@ -99,4 +109,3 @@ const Map: React.FC<MapProps> = ({ festivals, selectedFestival, onFestivalSelect
 };
 
 export default Map;
-

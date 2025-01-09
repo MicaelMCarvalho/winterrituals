@@ -31,7 +31,7 @@ const InteractiveMap: React.FC = () => {
   );
 
   const handleFestivalSelect = (festival: Festival) => {
-    setSelectedFestival(festival);
+    setSelectedFestival(prev => prev?.id === festival.id ? null : festival);
   };
 
   if (isLoading) {
