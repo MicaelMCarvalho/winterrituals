@@ -1,5 +1,5 @@
 import React from 'react';
-import { Festival } from '@/types/festival';
+import { Festival } from '../../types/festival';
 
 interface ListProps {
   festivals: Festival[];
@@ -25,7 +25,6 @@ const List: React.FC<ListProps> = ({ festivals, selectedFestival, onFestivalSele
             >
               <h3 className="font-semibold">{festival.name}</h3>
               <p className="text-sm text-gray-600">{festival.location}</p>
-              <p className="text-sm text-gray-500">{festival.date}</p>
             </div>
           ))}
         </div>

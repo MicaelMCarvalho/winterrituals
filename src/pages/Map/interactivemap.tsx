@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Map from '@/components/Map/Map';
-import List from '@/components/Map/List';
-import { getFestivals } from '@/services/festivalService';
-import { Festival } from '@/types/festival';
+import Map from '../../components/Map/Map';
+import List from '../../components/Map/List';
+import { getFestivals } from '../../services/festivalService';
+import { Festival } from '../../types/festival';
 
 const InteractiveMap: React.FC = () => {
   const [festivals, setFestivals] = useState<Festival[]>([]);

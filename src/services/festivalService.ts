@@ -1,4 +1,4 @@
-import { Festival } from '@/types/festival';
+import { Festival } from '../types/festival';
 
 export async function getFestivals(): Promise<Festival[]> {
   try {

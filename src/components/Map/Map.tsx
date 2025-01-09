@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { divIcon, DivIcon } from 'leaflet';
 import MapPopup from './MapPopup';
-import { Festival } from '@/types/festival';
+import { Festival } from '../../types/festival';
 import 'leaflet/dist/leaflet.css';
 
 interface MapProps {

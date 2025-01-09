@@ -12,7 +12,7 @@ const Home: React.FC = () => {
       link: "#"
     },
     {
-      title: t('home.features.nextEvents.title'),
+      title: t('home.features..title'),
       description: t('home.features.culturalStories.description'),
       image: "/api/placeholder/600/400",
       link: "#"
@@ -26,7 +26,7 @@ const Home: React.FC = () => {
         <div className="absolute inset-0">
           <img
             src="/api/placeholder/1920/500"
-            alt={t('home.hero.title')}
+            alt={""}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gray-900/40"></div>
@@ -39,7 +39,7 @@ const Home: React.FC = () => {
             <p className="text-xl mb-8">
               {t('home.hero.subtitle')}
             </p>
-            <button className="bg-white text-gray-900 px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors">
+            <button className="bg-white text-gray-900 px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors" onClick={() => window.location.href = '/map'}>
               {t('home.hero.cta', 'Start Exploring')}
             </button>
           </div>
@@ -47,6 +47,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Categories Section */}
+      {/* 
       <section>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">
@@ -77,8 +78,10 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+      */}
 
       {/* Featured Content Section */}
+      {/* 
       <section className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -103,8 +106,10 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+      */}
 
       {/* Newsletter Section */}
+      {/* 
       <section className="bg-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">
@@ -125,6 +130,7 @@ const Home: React.FC = () => {
           </form>
         </div>
       </section>
+      */}
     </div>
   );
 };

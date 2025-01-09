@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Edit, Trash2 } from 'lucide-react';
-import FestivalModal from '@/components/Modal/FestivalModal';
-import { Festival } from '@/types/festival';  // Import the Festival type from your types file
+import FestivalEdit from '../../components/Festival/FestivalEdit';
+import { Festival } from '../../types/festival';
+import ApiService from '../../services/api';
+import withAuth from '../../components/Auth/withAuth';
 
-const FestivalTable = () => {
+const AdminPage = () => {
   const [festivals, setFestivals] = useState<Festival[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredFestivals, setFilteredFestivals] = useState<Festival[]>([]);
@@ -18,11 +20,7 @@ const FestivalTable = () => {
 
   const fetchFestivals = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/festivals');
-      if (!response.ok) {
-        throw new Error('Failed to fetch festivals');
-      }
-      const data = await response.json();
+      const data = await ApiService.fetchFestivals();
       setFestivals(data);
       setFilteredFestivals(data);
       setError(null);
@@ -40,18 +38,17 @@ const FestivalTable = () => {
       const searchableFields = {
         name: festival.name,
         location: festival.location,
-        date: festival.date,
         description: festival.description,
         fromDate: festival.from_date,
         toDate: festival.to_date
       };
-      
+
       return Object.values(searchableFields).some(value => {
         if (value === null || value === undefined) return false;
         return String(value).toLowerCase().includes(searchString);
       });
     });
-    
+
     setFilteredFestivals(filtered);
   }, [searchTerm, festivals]);
 
@@ -61,14 +58,7 @@ const FestivalTable = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/api/festivals/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete festival');
-      }
-
+      await ApiService.deleteFestival(id);
       await fetchFestivals();
     } catch (error) {
       console.error('Error deleting festival:', error);
@@ -145,18 +135,14 @@ const FestivalTable = () => {
               </thead>
               <tbody className="bg-white">
                 {filteredFestivals.map((festival) => (
-                  <tr 
-                    key={festival.id} 
+                  <tr
+                    key={festival.id}
                     className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
                   >
                     <td className="p-3 text-sm">{festival.name}</td>
                     <td className="p-3 text-sm">{festival.location}</td>
                     <td className="p-3 text-sm">
-                      {festival.from_date && festival.to_date ? (
-                        `${new Date(festival.from_date).toLocaleDateString()} - ${new Date(festival.to_date).toLocaleDateString()}`
-                      ) : (
-                        festival.date
-                      )}
+                      `${new Date(festival.from_date).toLocaleDateString()} - ${new Date(festival.to_date).toLocaleDateString()}`
                     </td>
                     <td className="p-3 text-sm">
                       <div className="max-w-xs truncate" title={festival.description}>
@@ -195,7 +181,7 @@ const FestivalTable = () => {
       </div>
 
       {isModalOpen && (
-        <FestivalModal
+        <FestivalEdit
           festival={selectedFestival}
           onClose={handleCloseModal}
         />
@@ -204,4 +190,5 @@ const FestivalTable = () => {
   );
 };
 
-export default FestivalTable;
+export default withAuth(AdminPage);
+

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Globe, Zap } from 'lucide-react';
-import { Festival } from '@/types/festival';
+import { Festival } from '../../types/festival';
 import { useTranslation } from 'react-i18next';
+import ApiService from '../../services/api';
 
 const UpcomingFestivals = () => {
   const { t } = useTranslation();
@@ -14,38 +15,32 @@ const UpcomingFestivals = () => {
   }, []);
 
   const fetchFestivals = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/festivals');
-      if (!response.ok) {
-        throw new Error('Failed to fetch festivals');
+  try {
+    const data = await ApiService.fetchFestivals();
+    const sortedFestivals = data.sort((a: Festival, b: Festival) => {
+      const dateA = new Date(a.from_date);
+      const dateB = new Date(b.from_date);
+      return dateA.getTime() - dateB.getTime();
+    });
+
+    const currentDate = new Date();
+    const upcomingFestivals = sortedFestivals.filter((festival: Festival) => {
+      if (festival.from_date && festival.to_date) {
+        const endDate = new Date(festival.to_date);
+        return endDate >= currentDate;
       }
-      const data = await response.json();
-      
-      const sortedFestivals = data.sort((a: Festival, b: Festival) => {
-        const dateA = a.from_date ? new Date(a.from_date) : new Date(a.date);
-        const dateB = b.from_date ? new Date(b.from_date) : new Date(b.date);
-        return dateA.getTime() - dateB.getTime();
-      });
+    });
 
-      const currentDate = new Date();
-      const upcomingFestivals = sortedFestivals.filter((festival: Festival) => {
-        if (festival.from_date && festival.to_date) {
-          const endDate = new Date(festival.to_date);
-          return endDate >= currentDate;
-        }
-        const festivalDate = new Date(festival.date);
-        return festivalDate >= currentDate;
-      });
+    setFestivals(upcomingFestivals);
+    setError(null);
+  } catch (error) {
+    setError(t('festivals.errors.loadError'));
+    console.error('Error fetching festivals:', error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-      setFestivals(upcomingFestivals);
-      setError(null);
-    } catch (error) {
-      setError(t('festivals.errors.loadError'));
-      console.error('Error fetching festivals:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const formatDateRange = (festival: Festival) => {
     const dateOptions: Intl.DateTimeFormatOptions = {
@@ -62,7 +57,6 @@ const UpcomingFestivals = () => {
         toDate: toDate.toLocaleDateString(undefined, dateOptions)
       });
     }
-    return new Date(festival.date).toLocaleDateString(undefined, dateOptions);
   };
 
   const isHappeningNow = (festival: Festival) => {
@@ -76,10 +70,6 @@ const UpcomingFestivals = () => {
       endDate.setHours(23, 59, 59, 999);
       return currentDate >= startDate && currentDate <= endDate;
     }
-
-    const festivalDate = new Date(festival.date);
-    festivalDate.setHours(0, 0, 0, 0);
-    return currentDate.getTime() === festivalDate.getTime();
   };
 
   const getRelativeDateString = (festival: Festival) => {
@@ -87,7 +77,7 @@ const UpcomingFestivals = () => {
       return null;
     }
 
-    const startDate = festival.from_date ? new Date(festival.from_date) : new Date(festival.date);
+    const startDate = new Date(festival.from_date);
     const now = new Date();
     const diffTime = startDate.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -144,7 +134,7 @@ const UpcomingFestivals = () => {
                         <Calendar className="h-4 w-4 mr-2" />
                         <span>{formatDateRange(festival)}</span>
                       </div>
-                      {festival.url && (
+                      {festival.url && festival.url !== "" && (
                         <div className="flex items-center text-blue-600 hover:text-blue-800">
                           <Globe className="h-4 w-4 mr-2" />
                           <a 

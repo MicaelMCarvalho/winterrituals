@@ -2,7 +2,6 @@ export interface Festival {
   id: string;
   name: string;
   location: string;
-  date: string;
   description: string;
   coordinates: {
     lat: number;
@@ -11,17 +10,18 @@ export interface Festival {
   url: string;
   from_date: Date;
   to_date: Date;
+  holiday: string;
 }
 
 export interface FestivalResponse {
   id: string;
   name: string;
   location: string;
-  date: string;
   description: string;
   latitude: number;
   longitude: number;
   url: string;
   from_date: Date;
   to_date: Date;
+  holiday: string;
 }

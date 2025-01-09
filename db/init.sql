@@ -1,15 +1,27 @@
+-- Create tables
 CREATE TABLE festivals (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     location VARCHAR(255) NOT NULL,
-    date DATE NULL,
     description TEXT,
     latitude DECIMAL(10, 8) NOT NULL,
     longitude DECIMAL(11, 8) NOT NULL,
     url VARCHAR(255) NULL,
     from_date DATE NULL,
-    to_date DATE NULL
+    to_date DATE NULL,
+    holiday TEXT
 );
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert initial data
+INSERT INTO users (username, password_hash) VALUES
+    ('admin', '$2b$10$4v1OpA9QJZ1I2pGfOZpwIuM7VfIqG1mcP7eQRxMFfrtwwaH44r67C');
 
 INSERT INTO festivals (name, location, description, latitude, longitude, url, from_date, to_date) VALUES
     ('Festa dos Caretos de Podence', 
@@ -18,63 +30,54 @@ INSERT INTO festivals (name, location, description, latitude, longitude, url, fr
     41.5384, -6.9847,
     'https://caretos.podence.pt/',
     '2025-02-10', '2025-02-13'),
-
     ('Entrudo de Lazarim', 
     'Lazarim, Portugal', 
     'Ancient carnival celebration known for its wooden carved masks and satirical testaments read by masked figures representing the elderly.', 
     41.0047, -7.8543,
     'https://www.cm-lamego.pt/entrudo-de-lazarim',
     '2025-02-09', '2025-02-13'),
-
     ('Caretos de Ousilhão', 
     'Ousilhão, Portugal', 
     'Winter solstice celebration with masked figures in colorful costumes performing ancient purification rituals and traditional dances.', 
     41.8523, -6.9914,
     'https://www.cm-vinhais.pt/caretos-de-ousilhao',
     '2024-12-25', '2024-12-26'),
-
     ('Zangarrón de Montamarta', 
     'Montamarta, Spain', 
     'Traditional winter masquerade featuring the Zangarrón character in a distinctive mask with horns, who chases villagers in a purification ritual.', 
     41.6453, -5.8878,
     'https://www.turismozamora.es/zangarron-montamarta',
     '2025-01-01', '2025-01-06'),
-
     ('Boteiros de Viana do Bolo', 
     'Viana do Bolo, Spain', 
     'Winter festival featuring the Boteiros, masked figures in elaborate costumes with tall pointed hats, performing ritual jumps and dances.', 
     42.1757, -7.1088,
     'https://www.turismovianadobolo.es/boteiros',
     '2025-02-10', '2025-02-13'),
-
     ('Caretos de Vinhais', 
     'Vinhais, Portugal', 
     'Traditional masked figures in colorful suits with brass bells, performing ritual persecution and purification ceremonies.', 
     41.8349, -7.0026,
     'https://www.cm-vinhais.pt/caretos-de-vinhais',
     '2024-12-25', '2025-02-13'),
-
     ('Mascarada de los Sidros', 
     'Valdesoto, Spain', 
     'Ancient winter masquerade with masked characters including los Sidros and la Madama, performing traditional dances and social satire.', 
     43.3553, -5.6651,
     'https://www.turismoasturias.es/mascarada-sidros',
     '2024-12-20', '2025-01-06'),
-
     ('Tafarróns de Pozuelo de Tábara', 
     'Pozuelo de Tábara, Spain', 
     'Winter festival featuring masked Tafarróns in colorful attire with cowbells, performing purification rituals and traditional persecutions.', 
     41.7183, -5.9675,
     'https://www.turismozamora.es/tafarrones',
     '2024-12-26', '2024-12-26'),
-
     ('Festa dos Chocalheiros', 
     'Bemposta, Portugal', 
     'Winter masquerade featuring masked figures with large cowbells, performing traditional dances and purification rituals.', 
     41.3119, -6.5036,
     'https://www.cm-mogadouro.pt/chocalheiros',
     '2024-12-25', '2025-01-06'),
-
     ('Mascarada de la Vijanera', 
     'Silió, Spain', 
     'One of the first masquerades of the year featuring over 60 different character types with intricate masks, representing the battle between good and evil.', 
