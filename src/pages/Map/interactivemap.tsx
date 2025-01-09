@@ -9,6 +9,7 @@ const InteractiveMap: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedFestival, setSelectedFestival] = useState<Festival | null>(null);
 
   useEffect(() => {
     const loadFestivals = async (): Promise<void> => {
@@ -29,6 +30,10 @@ const InteractiveMap: React.FC = () => {
     festival.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleFestivalSelect = (festival: Festival) => {
+    setSelectedFestival(festival);
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -48,15 +53,23 @@ const InteractiveMap: React.FC = () => {
       />
       <div className="flex flex-col flex-grow lg:flex-row gap-4">
         <div className="h-[50vh] lg:h-[70vh] w-full lg:flex-1">
-          <Map festivals={filteredFestivals} />
+          <Map 
+            festivals={filteredFestivals} 
+            selectedFestival={selectedFestival}
+            onFestivalSelect={handleFestivalSelect}
+          />
         </div>
         <div className="h-[40vh] lg:h-[70vh] lg:w-80 flex-shrink-0">
-          <List festivals={filteredFestivals} />
+          <List 
+            festivals={filteredFestivals} 
+            selectedFestival={selectedFestival}
+            onFestivalSelect={handleFestivalSelect}
+          />
         </div>
       </div>
     </div>
   );
-
 };
 
 export default InteractiveMap;
+

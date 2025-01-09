@@ -3,9 +3,11 @@ import { Festival } from '@/types/festival';
 
 interface ListProps {
   festivals: Festival[];
+  selectedFestival: Festival | null;
+  onFestivalSelect: (festival: Festival) => void;
 }
 
-const List: React.FC<ListProps> = ({ festivals }) => {
+const List: React.FC<ListProps> = ({ festivals, selectedFestival, onFestivalSelect }) => {
   return (
     <div className="h-full w-full overflow-y-auto border rounded-md shadow bg-white">
       <div className="p-4">
@@ -14,7 +16,12 @@ const List: React.FC<ListProps> = ({ festivals }) => {
           {festivals.map((festival) => (
             <div 
               key={festival.id} 
-              className="p-4 border rounded-md hover:bg-gray-50 transition-colors"
+              className={`p-4 border rounded-md cursor-pointer transition-colors ${
+                selectedFestival?.id === festival.id 
+                  ? 'bg-blue-50 border-blue-500' 
+                  : 'hover:bg-gray-50'
+              }`}
+              onClick={() => onFestivalSelect(festival)}
             >
               <h3 className="font-semibold">{festival.name}</h3>
               <p className="text-sm text-gray-600">{festival.location}</p>

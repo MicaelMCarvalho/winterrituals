@@ -8,6 +8,9 @@ export interface Festival {
     lat: number;
     lng: number;
   };
+  url: string;
+  from_date: Date;
+  to_date: Date;
 }
 
 export interface FestivalResponse {
@@ -18,4 +21,7 @@ export interface FestivalResponse {
   description: string;
   latitude: number;
   longitude: number;
+  url: string;
+  from_date: Date;
+  to_date: Date;
 }

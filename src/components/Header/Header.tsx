@@ -14,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
 
   const mainNavLinks = [
     { name: t('header.nav.interactiveMap'), href: '/map' },
-    { name: t('header.nav.nextEvents'), href: '/eventsList' },
+    { name: t('header.nav.nextEvents'), href: '/upcomingevents' },
     { name: t('header.nav.about'), href: '/about' },
   ];
 

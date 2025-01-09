@@ -5,6 +5,9 @@ import Layout from './components/Layout/Layout';
 import Home from './pages/Home/Home';
 import InteractiveMap from './pages/Map/interactivemap';
 import About from './pages/About/About';
+import AdminPage from './pages/Admin/admin';
+import UpcomingFestivals from './pages/List/nextEvents';
+
 import './App.css';
 
 const App: React.FC = () => {
@@ -14,8 +17,9 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/map" element={<InteractiveMap />} />
-          <Route path="/nextEvents" element={<Home />} />
+          <Route path="/upcomingevents" element={<UpcomingFestivals />} />
           <Route path="/about" element={<About />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </Layout>
     </Router>

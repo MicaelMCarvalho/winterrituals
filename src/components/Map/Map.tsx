@@ -1,5 +1,5 @@
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import React, { useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { divIcon, DivIcon } from 'leaflet';
 import MapPopup from './MapPopup';
 import { Festival } from '@/types/festival';
@@ -7,14 +7,47 @@ import 'leaflet/dist/leaflet.css';
 
 interface MapProps {
   festivals: Festival[];
+  selectedFestival: Festival | null;
+  onFestivalSelect: (festival: Festival) => void;
 }
 
-const Map: React.FC<MapProps> = ({ festivals }) => {
+// This component handles map interactions
+const MapController: React.FC<{ selectedFestival: Festival | null }> = ({ selectedFestival }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (selectedFestival) {
+      map.flyTo(
+        [selectedFestival.coordinates.lat, selectedFestival.coordinates.lng],
+        map.getZoom(),
+        { duration: 0.5 }
+      );
+    }
+  }, [selectedFestival, map]);
+
+  return null;
+};
+
+const Map: React.FC<MapProps> = ({ festivals, selectedFestival, onFestivalSelect }) => {
+  const markerRefs = useRef<{ [key: string]: L.Marker }>({});
+
   const dotIcon: DivIcon = divIcon({
     className: 'custom-dot',
     html: '',
     iconSize: [10, 10],
   });
+
+  const selectedDotIcon: DivIcon = divIcon({
+    className: 'custom-dot-selected',
+    html: '',
+    iconSize: [14, 14],
+  });
+
+  useEffect(() => {
+    if (selectedFestival && markerRefs.current[selectedFestival.id]) {
+      markerRefs.current[selectedFestival.id].openPopup();
+    }
+  }, [selectedFestival]);
 
   return (
     <div className="h-full w-full relative">
@@ -28,11 +61,20 @@ const Map: React.FC<MapProps> = ({ festivals }) => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <MapController selectedFestival={selectedFestival} />
         {festivals.map((festival) => (
           <Marker 
             key={festival.id} 
             position={[festival.coordinates.lat, festival.coordinates.lng]}
-            icon={dotIcon}
+            icon={festival.id === selectedFestival?.id ? selectedDotIcon : dotIcon}
+            ref={(ref) => {
+              if (ref) {
+                markerRefs.current[festival.id] = ref;
+              }
+            }}
+            eventHandlers={{
+              click: () => onFestivalSelect(festival),
+            }}
           >
             <Popup>
               <MapPopup festival={festival} />
@@ -40,8 +82,21 @@ const Map: React.FC<MapProps> = ({ festivals }) => {
           </Marker>
         ))}
       </MapContainer>
+      <style>{`
+        .custom-dot {
+          background-color: #3b82f6;
+          border-radius: 50%;
+          border: 2px solid white;
+        }
+        .custom-dot-selected {
+          background-color: #ef4444;
+          border-radius: 50%;
+          border: 2px solid white;
+        }
+      `}</style>
     </div>
   );
 };
 
 export default Map;
+
