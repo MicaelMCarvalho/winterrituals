@@ -7,14 +7,14 @@ services:
     container_name: festivals_app
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3000:3000"  # Only expose locally since Nginx will proxy
+      - "127.0.0.1:${APP_PORT}:${APP_PORT}"
     environment:
-      - NODE_ENV=production
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=festivals_user
-      - DB_PASSWORD=festivals_password
-      - DB_NAME=festivals_db
+      - NODE_ENV=${NODE_ENV}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
     depends_on:
       db:
         condition: service_healthy
@@ -26,16 +26,16 @@ services:
     container_name: festivals_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: festivals_user
-      POSTGRES_PASSWORD: festivals_password
-      POSTGRES_DB: festivals_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "127.0.0.1:5432:5432"  # Only expose locally for security
+      - "127.0.0.1:${DB_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U festivals_user -d festivals_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
