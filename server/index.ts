@@ -10,25 +10,25 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Use env varia
 
 async function setupAdminUser() {
   try {
-    const adminUsername: string = process.env.ADMIN_USERNAME || "admin";
-    const adminPassword: string = process.env.ADMIN_PASSWORD || "admin";
+    const adminUsername = process.env.ADMIN_USERNAME || "admin";
+    const adminPassword = process.env.ADMIN_PASSWORD || "admin";
 
     if (!adminUsername || !adminPassword) {
       console.error("ADMIN_USERNAME and ADMIN_PASSWORD environment variables are required");
       return;
     }
 
-    // Check if admin user exists
+    console.log("Checking for existing user: ", adminUsername); // Debug log
     const existingAdmin = await pool.query(
       "SELECT * FROM users WHERE username = $1",
       [adminUsername]
     );
 
+    console.log("Existing admin user:", existingAdmin.rows[0]); // Debug log
     if (existingAdmin.rows.length > 0) {
       console.log("Admin user already exists");
       return;
     }
-
     // Create admin user
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(adminPassword, saltRounds);
@@ -38,11 +38,12 @@ async function setupAdminUser() {
       [adminUsername, passwordHash]
     );
 
-    console.log("Admin user created successfully");
+    console.log("Admin user created/updated successfully");
   } catch (error) {
     console.error("Failed to setup admin user:", error);
   }
 }
+
 
 app.use(cors());
 app.use(express.json());
@@ -176,6 +177,7 @@ app.post("/api/register", async (req: Request, res: Response) => {
 app.post("/api/login", async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
+    console.log("Login attempt for username:", username); // Debug log
 
     if (!username || !password) {
       res.status(400).json({ message: "username and password are required" });
@@ -186,6 +188,7 @@ app.post("/api/login", async (req: Request, res: Response) => {
     const result = await pool.query("SELECT * FROM users WHERE username = $1", [
       username,
     ]);
+    console.log("Database query result:", result.rows.length ? "User found" : "User not found"); // Debug log
 
     if (result.rows.length === 0) {
       res.status(401).json({ message: "Invalid credentials" });
@@ -193,9 +196,12 @@ app.post("/api/login", async (req: Request, res: Response) => {
     }
 
     const user = result.rows[0];
-
-    // Verify password
+    
+    // Log password comparison (don't log actual values in production)
+    console.log("Attempting password verification");
     const validPassword = await bcrypt.compare(password, user.password_hash);
+    console.log("Password verification result:", validPassword); // Debug log
+
     if (!validPassword) {
       res.status(401).json({ message: "Invalid credentials" });
       return;
@@ -212,7 +218,7 @@ app.post("/api/login", async (req: Request, res: Response) => {
       user: { id: user.id, username: user.username},
     });
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Login error details:", error); // Enhanced error logging
     res.status(500).json({ message: "Failed to log in" });
   }
 });
@@ -361,6 +367,51 @@ app.delete(
     }
   },
 );
+
+app.post("/api/reset-admin", async (req: Request, res: Response) => {
+  try {
+    const adminUsername = process.env.ADMIN_USERNAME || "admin";
+    const adminPassword = process.env.ADMIN_PASSWORD || "admin";
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(adminPassword, saltRounds);
+
+    await pool.query(
+      "UPDATE users SET password_hash = $1 WHERE username = $2",
+      [passwordHash, adminUsername]
+    );
+    console.log("Admin password reset successfully");
+    console.log("username:", adminUsername);
+    console.log("password:", adminPassword);
+
+    res.json({ message: "Admin password reset successfully" });
+  } catch (error) {
+    console.error("Reset error:", error);
+    res.status(500).json({ message: "Failed to reset admin password" });
+  }
+});
+
+app.post("/api/add-admin", async (req: Request, res: Response) => {
+  try {
+    const adminUsername = process.env.ADMIN_USERNAME || "admin";
+    const adminPassword = process.env.ADMIN_PASSWORD || "admin";
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(adminPassword, saltRounds);
+
+    await pool.query(
+      "INSERT INTO users (username, password_hash) VALUES ($1, $2)",
+      [adminUsername, passwordHash]
+    );
+    console.log("Admin user added successfully");
+    console.log("username:", adminUsername);
+    console.log("password:", adminPassword);
+
+    res.json({ message: "Admin user added successfully" });
+  } catch (error) {
+    console.error("Add admin error:", error);
+    res.status(500).json({ message: "Failed to add admin user" });
+  }
+});
+
 
 // Error handler
 app.use((err: Error, req: Request, res: Response, next: Function) => {
