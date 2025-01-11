@@ -7,14 +7,13 @@ services:
       args:
         - NODE_ENV=${NODE_ENV:-production}
     ports:
-      - "${CLIENT_PORT:-80}:80"  # Changed to 80 since we're using Nginx
+      - "${CLIENT_PORT:-80}:80"
     environment:
       - REACT_APP_API_URL=${API_URL:-http://localhost:3001}
     depends_on:
       - server
     networks:
       - app_network
-    # Remove development volumes since we're using multi-stage build
 
   server:
     build:
@@ -25,14 +24,14 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - PORT=${SERVER_PORT:-3001}
-      - DB_HOST=db  # Use service name instead of variable
+      - DB_HOST=db
       - DB_USER=${DB_USER:-festivals_user}
       - DB_PASSWORD=${DB_PASSWORD:-festivals_password}
       - DB_NAME=${DB_NAME:-festivals_db}
       - DB_PORT=${DB_PORT:-5432}
-      - JWT_SECRET=${JWT_SECRET:-your-secret-key}  # Added default
-      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}  # Added default
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin_password}  # Added default
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin_password}
     depends_on:
       db:
         condition: service_healthy
@@ -40,7 +39,7 @@ services:
       - app_network
 
   db:
-    image: postgres:15-alpine  # Using alpine for smaller image
+    image: postgres:15-alpine
     container_name: festivals_db
     restart: unless-stopped
     environment:
