@@ -10,8 +10,8 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Use env varia
 
 async function setupAdminUser() {
   try {
-    const adminUsername = process.env.ADMIN_USERNAME;
-    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminUsername: string = process.env.ADMIN_USERNAME || "admin";
+    const adminPassword: string = process.env.ADMIN_PASSWORD || "admin";
 
     if (!adminUsername || !adminPassword) {
       console.error("ADMIN_USERNAME and ADMIN_PASSWORD environment variables are required");
