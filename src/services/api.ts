@@ -1,7 +1,7 @@
 import { Festival } from '../types/festival';
 
 class ApiService {
-  private readonly API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+  private readonly API_BASE_URL: string = process.env.REACT_APP_API_URL || '/api'
 
   private getToken() {
     return localStorage.getItem('token');
