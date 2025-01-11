@@ -9,7 +9,8 @@ CREATE TABLE festivals (
     url VARCHAR(255) NULL,
     from_date DATE NULL,
     to_date DATE NULL,
-    holiday TEXT
+    holiday TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE users (
