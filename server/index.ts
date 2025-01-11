@@ -8,6 +8,42 @@ const app = express();
 const port = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Use env variable in production
 
+async function setupAdminUser() {
+  try {
+    const adminUsername = process.env.ADMIN_USERNAME;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminUsername || !adminPassword) {
+      console.error("ADMIN_USERNAME and ADMIN_PASSWORD environment variables are required");
+      return;
+    }
+
+    // Check if admin user exists
+    const existingAdmin = await pool.query(
+      "SELECT * FROM users WHERE username = $1",
+      [adminUsername]
+    );
+
+    if (existingAdmin.rows.length > 0) {
+      console.log("Admin user already exists");
+      return;
+    }
+
+    // Create admin user
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(adminPassword, saltRounds);
+
+    await pool.query(
+      "INSERT INTO users (username, password_hash) VALUES ($1, $2)",
+      [adminUsername, passwordHash]
+    );
+
+    console.log("Admin user created successfully");
+  } catch (error) {
+    console.error("Failed to setup admin user:", error);
+  }
+}
+
 app.use(cors());
 app.use(express.json());
 
@@ -332,8 +368,23 @@ app.use((err: Error, req: Request, res: Response, next: Function) => {
   res.status(500).json({ message: "Something broke!", error: err });
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+const startServer = async () => {
+  try {
+    await setupAdminUser();
+    
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+// app.listen(port, () => {
+//   console.log(`Server running on port ${port}`);
+// });
 
 export { app };

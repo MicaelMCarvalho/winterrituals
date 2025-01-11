@@ -1,24 +1,40 @@
 version: '3.8'
 services:
-  app:
-    env_file: .env
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: festivals_app
-    restart: unless-stopped
+  client:
+    image: micaelmc/winterrituals-client:latest
     ports:
-      - "127.0.0.1:3000:3000"
+      - "${CLIENT_PORT:-3000}:3000"
+    environment:
+      - REACT_APP_API_URL=${API_URL:-http://localhost:3001}
+    depends_on:
+      - server
+    volumes:
+      - ./src:/app/src
+      - /app/node_modules
+    networks:
+      - app_network
+
+  server:
+    image: micaelmc/winterrituals-server:latest
+    ports:
+      - "${SERVER_PORT:-3001}:3001"
     environment:
       - NODE_ENV=${NODE_ENV:-production}
-      - DB_HOST=${DB_HOST:-db}
-      - DB_PORT=${DB_PORT:-5432}
+      - PORT=${SERVER_PORT:-3001}
+      - DB_HOST=${DB_HOST}
       - DB_USER=${DB_USER:-festivals_user}
       - DB_PASSWORD=${DB_PASSWORD:-festivals_password}
       - DB_NAME=${DB_NAME:-festivals_db}
+      - DB_PORT=${DB_PORT:-5432}
+      - JWT_SECRET=${JWT_SECRET}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./server:/app/server
+      - /app/node_modules
     networks:
       - app_network
 
@@ -31,11 +47,12 @@ services:
       POSTGRES_USER: ${DB_USER:-festivals_user}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-festivals_password}
       POSTGRES_DB: ${DB_NAME:-festivals_db}
+      POSTGRES_INITDB_ARGS: "--set-constant=custom.admin_password='${ADMIN_PASSWORD}'"
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db/init-prod.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-festivals_user} -d ${DB_NAME:-festivals_db}"]
       interval: 5s

@@ -19,10 +19,6 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert initial data
-INSERT INTO users (username, password_hash) VALUES
-    ('admin', '$2b$10$4v1OpA9QJZ1I2pGfOZpwIuM7VfIqG1mcP7eQRxMFfrtwwaH44r67C');
-
 INSERT INTO festivals (name, location, description, latitude, longitude, url, from_date, to_date) VALUES
     ('Festa dos Caretos de Podence', 
     'Podence, Portugal', 
