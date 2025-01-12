@@ -6,7 +6,15 @@ import { pt } from './locales/pt';
 
 export type TranslationKeys = typeof en;
 
-const storedLanguage = localStorage.getItem('language') || 'en';
+const getBrowserLanguage = () => {
+  const storedLanguage = localStorage.getItem('language');
+  if (storedLanguage) return storedLanguage;
+
+  const browserLang = navigator.language.split('-')[0];
+
+  const supportedLanguages = ['en', 'es', 'pt'];
+  return supportedLanguages.includes(browserLang) ? browserLang : 'pt';
+};
 
 i18n
   .use(initReactI18next)
@@ -16,8 +24,8 @@ i18n
       es: { translation: es },
       pt: { translation: pt }
     },
-    lng: storedLanguage,
-    fallbackLng: 'en',
+    lng: getBrowserLanguage(),
+    fallbackLng: 'pt',
     interpolation: {
       escapeValue: false
     }

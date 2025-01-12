@@ -8,8 +8,10 @@ export const es = {
       loading: "Cargando festivales...",
       noResults: "No se encontraron festivales que coincidan con tu búsqueda.",
       deleteConfirm: "¿Estás seguro de que quieres eliminar este festival?",
-      deleteError: "Error al eliminar el festival. Por favor, inténtalo de nuevo.",
-      loadError: "Error al cargar los festivales. Por favor, inténtalo más tarde.",
+      deleteError:
+        "Error al eliminar el festival. Por favor, inténtalo de nuevo.",
+      loadError:
+        "Error al cargar los festivales. Por favor, inténtalo más tarde.",
       table: {
         headers: {
           name: "Nombre",
@@ -38,18 +40,20 @@ export const es = {
       fromDate: "Fecha de inicio",
       toDate: "Fecha de finalización",
       description: "Descripción",
-      url: "Sitio web"
-    }
+      url: "Sitio web",
+    },
   },
   about: {
     title: "Sobre Rituales de Invierno Ibéricos",
     mission: {
       title: "Nuestra Misión",
-      description: "Explorando el rico patrimonio cultural de las festividades invernales en la Península Ibérica. Documentamos y preservamos tradiciones antiguas que continúan cautivando e inspirando, conectando el pasado y el presente a través de celebraciones con máscaras y representaciones rituales.",
+      description:
+        "Explorando el rico patrimonio cultural de las festividades invernales en la Península Ibérica. Documentamos y preservamos tradiciones antiguas que continúan cautivando e inspirando, conectando el pasado y el presente a través de celebraciones con máscaras y representaciones rituales.",
     },
     masquerades: {
       title: "Las Mascaradas de Invierno",
-      description: 'Estas antiguas celebraciones, conocidas como "mascaradas" en Portugal y España, tienen lugar durante los meses de invierno, particularmente alrededor de Navidad, Año Nuevo y Carnaval. Cada festival presenta máscaras, trajes y personajes únicos que se han transmitido de generación en generación.',
+      description:
+        'Estas antiguas celebraciones, conocidas como "mascaradas" en Portugal y España, tienen lugar durante los meses de invierno, particularmente alrededor de Navidad, Año Nuevo y Carnaval. Cada festival presenta máscaras, trajes y personajes únicos que se han transmitido de generación en generación.',
       elements: {
         title: "Elementos Tradicionales",
         list: {
@@ -105,7 +109,8 @@ export const es = {
   home: {
     hero: {
       title: "Descubre los Rituales de Invierno",
-      subtitle: "Explora las antiguas tradiciones y el fascinante patrimonio cultural de las festividades invernales en Portugal y España.",
+      subtitle:
+        "Explora las antiguas tradiciones y el fascinante patrimonio cultural de las festividades invernales en Portugal y España.",
     },
     features: {
       interactiveMap: {
@@ -121,16 +126,22 @@ export const es = {
   footer: {
     about: {
       title: "Sobre Nosotros",
-      description: "Explorando el rico patrimonio cultural de las festividades invernales en la Península Ibérica.",
+      description:
+        "Explorando el rico patrimonio cultural de las festividades invernales en la Península Ibérica.",
+    },
+    quickLinks: {
+      title: "Links Rápidos",
+      map: "Mapa Interativo",
+      events: "Próximos Eventos",
+      about: "Sobre Nós",
     },
     contact: {
       title: "Contacto",
-      email: "info@iberianrituals.com",
+      email: "contacto@rituaisdeinverno.pt",
     },
-    followUs: {
-      title: "Síguenos",
-    },
-    copyright: "© {{year}} Rituales de Invierno Ibéricos. Todos los derechos reservados.",
+    copyright:
+      "© {{year}} Rituais de Inverno. Todos los derechos reservados.",
+    developedBy: "Desarrollado por Micael Carvalho en ",
   },
   festivals: {
     title: "Próximos Festivales",
@@ -140,7 +151,8 @@ export const es = {
     happeningNow: "Ocurriendo Ahora",
     dateRange: "{{fromDate}} - {{toDate}}",
     errors: {
-      loadError: "Error al cargar los festivales. Por favor, inténtalo más tarde.",
+      loadError:
+        "Error al cargar los festivales. Por favor, inténtalo más tarde.",
     },
     relative: {
       today: "Hoy",

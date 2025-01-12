@@ -118,18 +118,22 @@ export const pt = {
     },
   },
   footer: {
-    about: {
+        about: {
       title: "Sobre",
-      description: "Explorando o rico património cultural das festividades de inverno na Península Ibérica.",
+      description: "Explorando o rico património cultural das festividades de inverno na Península Ibérica. Junte-se a nós na descoberta de tradições antigas que continuam a cativar e inspirar."
+    },
+    quickLinks: {
+      title: "Links Rápidos",
+      map: "Mapa Interativo",
+      events: "Próximos Eventos",
+      about: "Sobre Nós"
     },
     contact: {
       title: "Contacto",
-      email: "info@iberianrituals.com",
+      email: "contacto@rituaisdeinverno.pt"
     },
-    followUs: {
-      title: "Siga-nos",
-    },
-    copyright: "© {{year}} Rituais de Inverno Ibéricos. Todos os direitos reservados.",
+    copyright: "© {{year}} Rituais de Inverno. Todos os direitos reservados.",
+    developedBy: "Desenvolvido por Micael Carvalho e "
   },
   festivals: {
     title: "Próximos Festivais",

@@ -37,8 +37,8 @@ export const en = {
       fromDate: "From Date",
       toDate: "To Date",
       description: "Description",
-      url: "Website URL"
-    }
+      url: "Website URL",
+    },
   },
   about: {
     title: "About Iberian Winter Rituals",
@@ -124,16 +124,20 @@ export const en = {
     about: {
       title: "About",
       description:
-        "Exploring the rich cultural heritage of winter festivities across the Iberian Peninsula.",
+        "Exploring the rich cultural heritage of winter festivities across the Iberian Peninsula. Join us in discovering ancient traditions that continue to captivate and inspire.",
+    },
+    quickLinks: {
+      title: "Quick Links",
+      map: "Interactive Map",
+      events: "Upcoming Events",
+      about: "About Us",
     },
     contact: {
       title: "Contact",
-      email: "info@iberianrituals.com",
+      email: "contacto@rituaisdeinverno.pt",
     },
-    followUs: {
-      title: "Follow Us",
-    },
-    copyright: "© {{year}} Iberian Winter Rituals. All rights reserved.",
+    copyright: "© {{year}} Rituais de Inverno. All rights reserved.",
+    developedBy: "Developed by Micael Carvalho at ",
   },
   festivals: {
     title: "Upcoming Festivals",
