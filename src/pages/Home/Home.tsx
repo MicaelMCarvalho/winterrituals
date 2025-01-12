@@ -40,7 +40,7 @@ const Home: React.FC = () => {
               {t('home.hero.subtitle')}
             </p>
             <button className="bg-white text-gray-900 px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors" onClick={() => window.location.href = '/map'}>
-              {t('home.hero.cta', 'Start Exploring')}
+              {t('home.start_exploring')}
             </button>
           </div>
         </div>

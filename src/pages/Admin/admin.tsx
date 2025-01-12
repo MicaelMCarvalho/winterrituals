@@ -7,7 +7,7 @@ import withAuth from '../../components/Auth/withAuth';
 import { useTranslation } from 'react-i18next';
 
 const AdminPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [festivals, setFestivals] = useState<Festival[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredFestivals, setFilteredFestivals] = useState<Festival[]>([]);
@@ -154,7 +154,7 @@ const AdminPage = () => {
                     <td className="p-3 text-sm">{festival.name}</td>
                     <td className="p-3 text-sm">{festival.location}</td>
                     <td className="p-3 text-sm">
-                      {new Date(festival.from_date).toLocaleDateString()} - {new Date(festival.to_date).toLocaleDateString()}
+                      {new Date(festival.from_date).toLocaleDateString(i18n.language)} - {new Date(festival.to_date).toLocaleDateString(i18n.language)}
                     </td>
                     <td className="p-3 text-sm">
                       <div className="max-w-xs truncate" title={festival.description}>

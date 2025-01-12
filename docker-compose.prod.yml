@@ -48,7 +48,8 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:-festivals_password}
       POSTGRES_DB: ${DB_NAME:-festivals_db}
     ports:
-      - "127.0.0.1:${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-5432}:5432"
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./db/init-prod.sql:/docker-entrypoint-initdb.d/init.sql

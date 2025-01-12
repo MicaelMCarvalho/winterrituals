@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, MapPin } from 'lucide-react';
-import MDEditor from '@uiw/react-md-editor';
+import { X, MapPin, Bold, Italic, List, Heading, Link as LinkIcon, Image, ListOrdered, UnderlineIcon } from 'lucide-react';
+import { Editor, EditorState, RichUtils } from 'draft-js';
+import 'draft-js/dist/Draft.css';
 import { Festival } from '../../types/festival';
 import LocationSearch from '../../components/Location/LocationSearch';
 import ApiService from '../../services/api';
@@ -11,34 +12,67 @@ interface FestivalModalProps {
   onClose: (shouldRefresh?: boolean) => void;
 }
 
+interface StyleButtonProps {
+  icon: React.ReactNode;
+  onClick: () => void;
+  active?: boolean;
+  tooltip: string;
+}
+
+const StyleButton: React.FC<StyleButtonProps> = ({ icon, onClick, active, tooltip }) => (
+  <button
+    type="button"
+    onClick={(e) => {
+      e.preventDefault();
+      onClick();
+    }}
+    className={`p-2 hover:bg-gray-100 rounded \${active ? 'bg-gray-200' : ''}`}
+    title={tooltip}
+  >
+    {icon}
+  </button>
+);
+
 const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState<Festival>({
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  
+  const [formData, setFormData] = useState<Omit<Festival, 'description'>>({
     id: festival?.id || '',
     name: festival?.name || '',
     location: festival?.location || '',
-    description: festival?.description || '',
     coordinates: festival?.coordinates || { lat: 0, lng: 0 },
     url: festival?.url || '',
     from_date: festival?.from_date || new Date(),
     to_date: festival?.to_date || new Date(),
     holiday: festival?.holiday || '',
   });
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Handle markdown editor changes
-  const handleDescriptionChange = (value?: string) => {
-    setFormData(prev => ({
-      ...prev,
-      description: value || ''
-    }));
+  // Handle keyboard commands
+  const handleKeyCommand = (command: string, editorState: EditorState) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      setEditorState(newState);
+      return 'handled';
+    }
+    return 'not-handled';
+  };
+
+  // Style controls
+  const toggleInlineStyle = (style: string) => {
+    setEditorState(RichUtils.toggleInlineStyle(editorState, style));
+  };
+
+  const toggleBlockType = (blockType: string) => {
+    setEditorState(RichUtils.toggleBlockType(editorState, blockType));
   };
 
   // Handle other input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
     if (name.startsWith('coordinates.')) {
       const coordinateKey = name.split('.')[1] as 'lat' | 'lng';
       setFormData(prev => ({
@@ -62,10 +96,19 @@ const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
     setError(null);
 
     try {
+      // Get plain text content for now
+      const contentState = editorState.getCurrentContent();
+      const description = contentState.getPlainText();
+
+      const submitData = {
+        ...formData,
+        description
+      };
+
       if (formData.id) {
-        await ApiService.updateFestival(formData.id, formData);
+        await ApiService.updateFestival(formData.id, submitData);
       } else {
-        await ApiService.createFestival(formData);
+        await ApiService.createFestival(submitData);
       }
       onClose(true);
     } catch (error) {
@@ -75,6 +118,13 @@ const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
       setIsSubmitting(false);
     }
   };
+
+  const currentInlineStyle = editorState.getCurrentInlineStyle();
+  const selection = editorState.getSelection();
+  const blockType = editorState
+    .getCurrentContent()
+    .getBlockForKey(selection.getStartKey())
+    .getType();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -95,7 +145,6 @@ const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
 
         {/* Modal Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Error Message */}
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
               {error}
@@ -115,6 +164,7 @@ const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
               onChange={handleChange}
               required
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              placeholder={t('admin.form.namePlaceholder')}
             />
           </div>
 
@@ -137,48 +187,111 @@ const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
             </div>
           </div>
 
+
           {/* Dates */}
-          <div>
-            <label htmlFor="from_date" className="block text-sm font-medium text-gray-700">
-              {t('admin.form.fromDate')}
-            </label>
-            <input
-              type="date"
-              id="from_date"
-              name="from_date"
-              value={formData.from_date.toString().split('T')[0]}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="from_date" className="block text-sm font-medium text-gray-700">
+                {t('admin.form.fromDate')}
+              </label>
+              <input
+                type="date"
+                id="from_date"
+                name="from_date"
+                value={formData.from_date.toString().split('T')[0]}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label htmlFor="to_date" className="block text-sm font-medium text-gray-700">
+                {t('admin.form.toDate')}
+              </label>
+              <input
+                type="date"
+                id="to_date"
+                name="to_date"
+                value={formData.to_date.toString().split('T')[0]}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              />
+            </div>
           </div>
 
+          {/* Holiday */}
+          {/* 
           <div>
-            <label htmlFor="to_date" className="block text-sm font-medium text-gray-700">
-              {t('admin.form.toDate')}
+            <label htmlFor="holiday" className="block text-sm font-medium text-gray-700">
+              {t('admin.form.holiday')}
             </label>
             <input
-              type="date"
-              id="to_date"
-              name="to_date"
-              value={formData.to_date.toString().split('T')[0]}
+              type="text"
+              id="holiday"
+              name="holiday"
+              value={formData.holiday}
               onChange={handleChange}
-              required
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              placeholder={t('admin.form.holidayPlaceholder')}
             />
           </div>
+          */}
 
-          {/* Description with Markdown Editor */}
+          {/* Description with Draft.js Editor */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               {t('admin.form.description')}
             </label>
-            <MDEditor
-              value={formData.description}
-              onChange={handleDescriptionChange}
-              height={200}
-              preview="edit"
-            />
+            <div className="space-y-2">
+              <div className="flex items-center space-x-1 border rounded-md bg-gray-50 p-1">
+                <StyleButton
+                  icon={<Bold className="h-4 w-4" />}
+                  onClick={() => toggleInlineStyle('BOLD')}
+                  active={currentInlineStyle.has('BOLD')}
+                  tooltip={t('editor.bold')}
+                />
+                <StyleButton
+                  icon={<Italic className="h-4 w-4" />}
+                  onClick={() => toggleInlineStyle('ITALIC')}
+                  active={currentInlineStyle.has('ITALIC')}
+                  tooltip={t('editor.italic')}
+                />
+                <StyleButton
+                  icon={<UnderlineIcon className="h-4 w-4" />}
+                  onClick={() => toggleInlineStyle('UNDERLINE')}
+                  active={currentInlineStyle.has('UNDERLINE')}
+                  tooltip={t('editor.underline')}
+                />
+                <div className="w-px h-6 bg-gray-300 mx-1" />
+                <StyleButton
+                  icon={<Heading className="h-4 w-4" />}
+                  onClick={() => toggleBlockType('header-one')}
+                  active={blockType === 'header-one'}
+                  tooltip={t('editor.heading')}
+                />
+                <StyleButton
+                  icon={<List className="h-4 w-4" />}
+                  onClick={() => toggleBlockType('unordered-list-item')}
+                  active={blockType === 'unordered-list-item'}
+                  tooltip={t('editor.bulletList')}
+                />
+                <StyleButton
+                  icon={<ListOrdered className="h-4 w-4" />}
+                  onClick={() => toggleBlockType('ordered-list-item')}
+                  active={blockType === 'ordered-list-item'}
+                  tooltip={t('editor.numberedList')}
+                />
+              </div>
+              <div className="border rounded-md p-2 min-h-[200px] bg-white">
+                <Editor
+                  editorState={editorState}
+                  onChange={setEditorState}
+                  handleKeyCommand={handleKeyCommand}
+                  placeholder={t('admin.form.descriptionPlaceholder')}
+                />
+              </div>
+            </div>
           </div>
 
           {/* URL */}
@@ -192,8 +305,8 @@ const FestivalEdit: React.FC<FestivalModalProps> = ({ festival, onClose }) => {
               name="url"
               value={formData.url}
               onChange={handleChange}
-              required
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              placeholder={t('admin.form.urlPlaceholder')}
             />
           </div>
 

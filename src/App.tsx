@@ -7,7 +7,7 @@ import InteractiveMap from './pages/Map/interactivemap';
 import About from './pages/About/About';
 import AdminPage from './pages/Admin/admin';
 import LoginPage from './pages/User/login';
-import UpcomingFestivals from './pages/List/nextEvents';
+import UpcomingFestivals from './pages/List/upcomingEvents';
 import { useTranslation } from 'react-i18next';
 
 import './App.css';

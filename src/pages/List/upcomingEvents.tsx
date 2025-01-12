@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import ApiService from '../../services/api';
 
 const UpcomingFestivals = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [festivals, setFestivals] = useState<Festival[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,32 +15,36 @@ const UpcomingFestivals = () => {
   }, []);
 
   const fetchFestivals = async () => {
-  try {
-    const data = await ApiService.fetchFestivals();
-    const sortedFestivals = data.sort((a: Festival, b: Festival) => {
-      const dateA = new Date(a.from_date);
-      const dateB = new Date(b.from_date);
-      return dateA.getTime() - dateB.getTime();
-    });
+    try {
+      const data = await ApiService.fetchFestivals();
+      const sortedFestivals = data.sort((a: Festival, b: Festival) => {
+        const dateA = new Date(a.from_date);
+        const dateB = new Date(b.from_date);
+        return dateA.getTime() - dateB.getTime();
+      });
 
-    const currentDate = new Date();
-    const upcomingFestivals = sortedFestivals.filter((festival: Festival) => {
-      if (festival.from_date && festival.to_date) {
-        const endDate = new Date(festival.to_date);
-        return endDate >= currentDate;
-      }
-    });
+      const currentDate = new Date();
+      const upcomingFestivals = sortedFestivals.filter((festival: Festival) => {
+        if (festival.from_date && festival.to_date) {
+          const endDate = new Date(festival.to_date);
+          return endDate >= currentDate;
+        }
+      });
 
-    setFestivals(upcomingFestivals);
-    setError(null);
-  } catch (error) {
-    setError(t('festivals.errors.loadError'));
-    console.error('Error fetching festivals:', error);
-  } finally {
-    setIsLoading(false);
-  }
-};
+      setFestivals(upcomingFestivals);
+      setError(null);
+    } catch (error) {
+      setError(t('festivals.errors.loadError'));
+      console.error('Error fetching festivals:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  // const getMonthName = (date: Date, format: MonthFormat = 'long', locale: string = 'en-US'): string => {
+  //   return new Intl.DateTimeFormat(locale, { month: format }).format(date);
+  // };
+  //
 
   const formatDateRange = (festival: Festival) => {
     const dateOptions: Intl.DateTimeFormatOptions = {
@@ -51,11 +55,17 @@ const UpcomingFestivals = () => {
 
     if (festival.from_date && festival.to_date) {
       const fromDate = new Date(festival.from_date);
-      const toDate = new Date(festival.to_date);
-      return t('festivals.dateRange', {
-        fromDate: fromDate.toLocaleDateString(undefined, dateOptions),
-        toDate: toDate.toLocaleDateString(undefined, dateOptions)
-      });
+      if (festival.to_date != null) {
+        const toDate = new Date(festival.to_date);
+        return t('festivals.dateRange', {
+          fromDate: fromDate.toLocaleDateString(i18n.language, dateOptions),
+          toDate: toDate.toLocaleDateString(i18n.language, dateOptions)
+        });
+      } else {
+        return t('festivals.dateRangeUnique', {
+          fromDate: fromDate.toLocaleDateString(i18n.language, dateOptions),
+        });
+      }
     }
   };
 
@@ -81,7 +91,7 @@ const UpcomingFestivals = () => {
     const now = new Date();
     const diffTime = startDate.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return t('festivals.relative.today');
     if (diffDays === 1) return t('festivals.relative.tomorrow');
     if (diffDays < 7) return t('festivals.relative.days', { count: diffDays });
@@ -101,7 +111,7 @@ const UpcomingFestivals = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">{t('festivals.title')}</h1>
-      
+
       {isLoading ? (
         <div className="text-center py-8">
           <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
@@ -116,9 +126,9 @@ const UpcomingFestivals = () => {
           {festivals.map((festival) => {
             const happening = isHappeningNow(festival);
             const relativeDate = getRelativeDateString(festival);
-            
+
             return (
-              <div 
+              <div
                 key={festival.id}
                 className={`bg-white rounded-lg shadow-sm border ${happening ? 'border-green-500' : 'border-gray-200'} p-6 hover:shadow-md transition-shadow`}
               >
@@ -137,9 +147,9 @@ const UpcomingFestivals = () => {
                       {festival.url && festival.url !== "" && (
                         <div className="flex items-center text-blue-600 hover:text-blue-800">
                           <Globe className="h-4 w-4 mr-2" />
-                          <a 
-                            href={festival.url} 
-                            target="_blank" 
+                          <a
+                            href={festival.url}
+                            target="_blank"
                             rel="noopener noreferrer"
                             className="hover:underline"
                           >
@@ -152,7 +162,7 @@ const UpcomingFestivals = () => {
                   <div className="text-sm font-medium">
                     {happening ? (
                       <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full">
-                        <Zap className="h-3 w-3 mr-1" />
+                        < Zap className="h-3 w-3 mr-1" />
                         {t('festivals.happeningNow')}
                       </span>
                     ) : relativeDate && (

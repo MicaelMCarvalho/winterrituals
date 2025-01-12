@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Search, MapPin, Loader2 } from 'lucide-react';
 
 interface LocationResult {
@@ -20,16 +21,45 @@ interface LocationResult {
 
 interface LocationSearchProps {
   onLocationSelect: (location: string, coordinates: { lat: number; lng: number }) => void;
+  debounceTime?: number;
 }
 
-const LocationSearch: React.FC<LocationSearchProps> = ({ onLocationSelect }) => {
+// Custom hook for debounced value
+const useDebounce = <T,>(value: T, delay: number): T => {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
+const LocationSearch: React.FC<LocationSearchProps> = ({ 
+  onLocationSelect, 
+  debounceTime = 2000  // Default debounce time of 500ms
+}) => {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<LocationResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const searchLocation = async () => {
-    if (!query.trim()) return;
+  // Use the debounced query value
+  const debouncedQuery = useDebounce(query, debounceTime);
+
+  // Search function
+  const searchLocation = async (searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setResults([]);
+      return;
+    }
     
     setLoading(true);
     setError('');
@@ -37,7 +67,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({ onLocationSelect }) => 
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          query
+          searchQuery
         )}&limit=5&addressdetails=1`,
         {
           headers: {
@@ -59,6 +89,15 @@ const LocationSearch: React.FC<LocationSearchProps> = ({ onLocationSelect }) => 
       setLoading(false);
     }
   };
+
+  // Effect to trigger search when debounced query changes
+  useEffect(() => {
+    if (debouncedQuery) {
+      searchLocation(debouncedQuery);
+    } else {
+      setResults([]);
+    }
+  }, [debouncedQuery]);
 
   const formatLocation = (address: LocationResult['address']) => {
     if (!address) return '';
@@ -92,6 +131,17 @@ const LocationSearch: React.FC<LocationSearchProps> = ({ onLocationSelect }) => 
     setQuery(locationString);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      searchLocation(query); // Immediately search on Enter
+    }
+  };
+
   return (
     <div className="relative w-full">
       <div className="flex gap-2">
@@ -99,9 +149,9 @@ const LocationSearch: React.FC<LocationSearchProps> = ({ onLocationSelect }) => 
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && searchLocation()}
-            placeholder="Search for a town or address..."
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder={t('admin.form.searchPlaceholder')}
             className="w-full p-2 pr-8 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {loading && (
@@ -111,7 +161,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({ onLocationSelect }) => 
           )}
         </div>
         <button
-          onClick={searchLocation}
+          onClick={() => searchLocation(query)}
           disabled={loading}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
         >

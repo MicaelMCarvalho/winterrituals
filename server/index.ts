@@ -29,7 +29,7 @@ async function setupAdminUser() {
       console.log("Admin user already exists");
       return;
     }
-    // Create admin user
+
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(adminPassword, saltRounds);
 

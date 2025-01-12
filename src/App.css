@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'draft-js/dist/Draft.css';
+
+
 body {
   margin: 0;
   padding: 0;
